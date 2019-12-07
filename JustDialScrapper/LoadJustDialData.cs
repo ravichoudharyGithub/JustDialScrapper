@@ -159,7 +159,7 @@ namespace JustDialScrapper
             }
             catch (Exception e)
             {
-
+                ;
             }
         }
 
