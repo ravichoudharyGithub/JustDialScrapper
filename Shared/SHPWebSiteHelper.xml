@@ -1,0 +1,926 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SHPWebSiteHelper</name>
+    </assembly>
+    <members>
+        <member name="F:Verq.SHPWebSiteHelper.SHPHelp.grcIEStart">
+            '''''''''''''''''''''''''''''''''''''''''''
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ResponseRedirectIfDifferent(System.String)">
+            <summary>
+            If the User Requested a page that is different than the one we should be on, go to the correct page
+            </summary>
+            <param name="newurl">new, correct url that we want to be at</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ResponseRedirect301(System.String)">
+            <summary>
+            Do a permanent redirect to the specified url
+            </summary>
+            <param name="newurl">new, correct url that we want to be at</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.SetLinkCanonicalIfDifferent(System.String)">
+            <summary>
+            If the User Requested a page that is different than the one we should be on, 
+            set Link Canonical session variable to the correct page
+            </summary>
+            <param name="newurl">new, correct url that we want to be at</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetRawUrlIfRewritten">
+            <summary>
+            When a Url is rewritten, we can often extract what the actual, raw Url was that the user's browser requested.
+            This is only possible if the UrlRewriter is configured to set an appropriate server variable.  This routine will work with 
+            IonicRewriter 4 and with Mono
+            </summary>
+            <returns>original Url before being rewritten</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.SetLLBLGenSerializationMode">
+            <summary>
+            To enable Fast mode LLBLGenSerialization, setan AppSetting for UseLLBLGenFastSerialization = true
+            Global method to force LLBLGen Serialization mode to what we are using.
+            None will be a larger data structure and is slower for Couchbase
+            Fast has the problem that it forces a serialization/deserialization with makes it slower to System.Web.Caching
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.AddLinksToHTML(System.String,System.Int64,System.Int64,System.String)">
+            <summary>
+            Insert links to products, categories and search results 
+            based on the input html and a list of relevant 'desired' links.
+            </summary>
+            <param name="strIn">html</param>
+            <param name="productId">productId associated with this html if known, else 0</param>
+            <param name="categoryId">categoryId associated with this html if known, else 0</param>
+            <param name="linkType">context of where this html will be displayed.  
+            This will prevent links from a product to the same product, etc.
+            Allowed link types are ShopEXD,SHPSearch,Showcategories,ShopEXD_OptionalFields,OutputRow,ProductManual,Article</param>
+            <returns>output html</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FindPossibleDesiredLinksMatches(SHP.DataAdapter.EntityClasses.DesiredLinksEntity,EeekSoft.Text.StringSearchWrapper,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Uses multiList's binary search feature to add only those DesiredLinks phrases that might be a match
+            </summary>
+            <param name="desiredLinksSearchObject"></param>
+            <param name="match">entity that should contain a search value in one of its fields</param>
+            <param name="desiredLinksDictionary"></param>
+            <remarks>requires that multiList be set to the correct active list for the search being performed
+            prior to calling this</remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.RemoveEmptySessions">
+            <summary>
+            We found that removing sessions is much slower than setting to empty,
+            so we only remove once per page.
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Generate_JS_Menus_SF">
+            '''''''''''''''''''''''''''''''''''''''''''
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GeneratePg1011MetaData(System.Int64)">
+            <summary>
+            For ShowCategories
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GeneratePg14MetaData">
+            <summary>
+            For Article_Detail
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CalculateCategoryLevel(System.Int32)">
+            <summary>
+            Returns an integer about the depth of a category.
+            0 means not found.
+            1 means top level category
+            2 means had one parent
+            etc
+            </summary>
+            <param name="categoryId">category id</param>
+            <returns>category level</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.DoesCategoryHaveChildren(System.Int64)">
+            <summary>
+            Returns true if has children, false if no children
+            </summary>
+            <param name="categoryId">categoryId</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetChildrenForCategory(System.Int64,System.Boolean,SHP.DataAdapter.HelperClasses.EntityCollection{SHP.DataAdapter.EntityClasses.CategoriesEntity}@)">
+            <summary>
+            Return an entity collection of all children for a given category. The parent category
+            is NOT included in the list.
+            </summary>
+            <param name="startCategoryId">parent category id</param>
+            <param name="addLeafNodesOnly">true means will add only the leaf descendents.  false is all descendents</param>
+            <param name="matchCollection">returned collection of category entities</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetCategoryBreadcrumbList(System.Int64)">
+            <summary>
+            Returns entity collection of categories that represent the breadcrumb for the 
+            given category.  Results include the given category and the first element is the top level
+            category with the last element being the requested category
+            </summary>
+            <param name="categoryID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetLowerLevelCategories(System.Int64)">
+            <summary>
+            Returns entity collection of categories that are under the 
+            given category.  
+            </summary>
+            <param name="categoryID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.MostPopularCategoriesForListOfProducts(System.Collections.Generic.List{System.Int64},System.Double)">
+            <summary>
+            Returns a list of categories that occur in a given list of products.
+            This list is in descending order of number of products in each category,
+            and only includes categories with a given significance.
+            </summary>
+            <param name="prods"></param>
+            <param name="minSignificanceThreshold"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CreateLinkedCategoryBreadcrumb(System.Int64)">
+            <summary>
+            Returns an HTML-formatted category breadcrumb for a given category
+            that contains links to the category page for each category in the breadcrumb.
+            </summary>
+            <param name="categoryId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetTopLevelCategories">
+            <summary>
+            Returns all 'top level' categories with highercategoryId = 0
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetImageSize(System.String,System.Int32@,System.Int32@)">
+            <summary>
+            Load image with .NET image routine and return height and width.
+            </summary>
+            <param name="sourceFileName">filename</param>
+            <param name="width">output width</param>
+            <param name="height">output height</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetGoogleOitems">
+            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.MagentoStoreName(System.String)">
+            <summary>
+            Removes prefix of Magento from Store name.  This is 
+            used to call the magento handler for any magento store
+            </summary>
+            <param name="full"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.SplitTbl(System.String,System.String)">
+            <summary>
+            (deprecated. moved to VBHelper SplitTbl.  use that instead)
+            A variant of the Split function, that offers the following improvements
+            You can pass a list of valid delimiters to the second argument
+            (however, only single-char delimiters are accepted)
+            Differently from the regular Split function, consecutive occurrences
+            of delimiters are ignored (in this case Split creates empty
+            elements in the result array)
+            http://www.devx.com/vb2themax/Tip/18915
+            </summary>
+            <param name="Text"></param>
+            <param name="DelimiterTbl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ReplaceASP(System.String,System.String)">
+            <summary>
+            Useful to replace .asp with .aspx.  But code will not process if already .aspx (no .aspxx)
+            </summary>
+            <param name="strIn">input string</param>
+            <param name="strReplaceText">replace text (e.g. .aspx)</param>
+            <returns>returns replaced string in original case.  will not convert to lower/upper</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ReplaceASP(System.String,System.String,System.Boolean)">
+            <summary>
+            Useful to replace .asp with .aspx.  But code will not process if already .aspx (no .aspxx)
+            </summary>
+            <param name="strIn">input string</param>
+            <param name="strReplaceText">replace text (e.g. .aspx)</param>
+            <param name="fForceLowerCase">If true will force lower case.  If false, will leave case as same as when called</param>
+            <returns>returns replaced string</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ParseString(System.String)">
+            <summary>
+            this subroutine parses stringtoparse and returns the pieces in parts
+            </summary>
+            <param name="stringtoparse"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.AddToQuery(System.String@,System.String,System.String)">
+            <summary>
+            Adds a key / value pair to a query string.
+            </summary>
+            <param name="querystring">in/out existing query string</param>
+            <param name="keytoadd"></param>
+            <param name="valuetoadd"></param>
+            <returns>Changes query string, but also returns the same value as a function</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CombineHtmlContentIntoOneString(SHP.DataAdapter.EntityClasses.ProductsEntity,System.Int32)">
+            <summary>
+            Create in memory HTMLContent in sorted order (so is reassembled correctly) and using correct version pe Configuration table
+            </summary>
+            <param name="prodEnt"></param>
+            <param name="version">integer of which 'version' of content to use.  for instance,
+            there might be multiple complete instances of content for a given product, if each
+            version will be deployed to a different website or other purpose
+            </param>
+            <returns>string that combined all of the 'parts' of a given version of htmlcontent</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.RelatedQtyProducts(System.Int64,System.Boolean,System.Int32)">
+            <summary>
+            Builds a  list of product ids for products that are quantity groupings of this product.
+            Or, if this is a quantity grouping, return a list of of the main product and other quantity groupings
+            </summary>
+            <param name="catalogid"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.RelatedPackageProducts(System.Int64,SHP.DataAdapter.HelperClasses.EntityCollection{SHP.DataAdapter.EntityClasses.PackagesEntity})">
+            <summary>
+            Gets List of products which are packages that contain this product, either as quanity items or combo units
+            </summary>
+            <param name="catalogid">product id of product</param>
+            <param name="prodMatchList">List of products which are packages that contain this product, either as quanity items or combo units</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.PackagesOfThisProduct(System.Int32)">
+            <summary>
+            Return a collection of Packages for this productId
+            i.e., this is used to find all of the quantity or combo items that are shipped
+            when someone buys this product
+            </summary>
+            <param name="catalogId">productId of product which is a package</param>
+            <returns>Entity collection of Packages for this productId</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetEstimatedItemCost(System.Int64)">
+            <summary>
+            Get Item cost of a product.  If the product is part of a package, sum up all of the itemcosts from 
+            the package or combo items.
+            </summary>
+            <param name="catalogid">product id</param>
+            <returns>A return value of 0 means unknown item cost</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FindProdCodeFromCache(System.String)">
+            <summary>
+            Load All mappings of Product Code to CatalogId for fast lookup of catalogid 
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FindProdCode(System.String)">
+            <summary>
+            this function located a product with a specified code and returns the catalogid
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetProductDataWithPackagesAndSupplierFromCache(System.Int64)">
+            <summary>
+            In addition to return ProductData, includ Packages and Supplier data from the cache.
+            </summary>
+            <param name="prodId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetSupplierEntity(System.Int32)">
+            <summary>
+            Return suppliersEntity given a supplierId
+            </summary>
+            <param name="supplierId"></param>
+            <returns>found supplier entity or a blank supplier record</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ClearAllProductData">
+            <summary>
+            Clears all product data from memory.  This is only useful if we are done will result in more memory usage but much faster lookups
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetListOfAllCatalogIds">
+            <summary>
+            Returns a list of all product catalogids in database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.PreLoadAllProductData">
+            <summary>
+            Loads all product data into memory.  This will result in more memory usage but much faster lookups
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.PreLoadAllProductData(System.Boolean)">
+            <summary>
+            Loads all product data into memory.  This will result in more memory usage but much faster lookups
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.GetEBayCatTreeOld(System.Int32)">
+            <summary>
+            The problem with this method is it loads a full copy of the 50+ Mb eBay category tree
+            for each instance of SHPWebsiteHelper.
+            The new method uses memcached and shares this across all instances.
+            </summary>
+            <param name="eBayCategoryID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.PadUPCCode(System.String)">
+            <summary>
+            preped 0's to UPC code for proper 12 digits codes.  Will just return input data if proper length or if does not appear to be a valid UPC
+            </summary>
+            <param name="upc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CheckIfTooManySignUps(System.String@)">
+            <summary>
+            Keeps track of number of new subscriptions at a user level and a application level .
+            If too many signups in a period, will return true and an explanation
+            </summary>
+            <param name="error">string explaining why returned true.</param>
+            <returns>true if there is a problem due to too many signups</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CheckIfTooManySignUps(System.String@,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Keeps track of number of new subscriptions at a user level and a application level .
+            If too many signups in a period, will return true and an explanation
+            </summary>
+            <param name="error">string explaining why returned true.</param>
+            <param name="maxSignUpsPerSession">For each user session, how many submission attempts are allowed</param>
+            <param name="maxSignUpsOverallDuringEachPeriod">For the overall application (all users), how many submission attempts are allowed</param>
+            <param name="resetMinutes">after how long will the application counters be reset to 0</param>
+            <returns>true if there is a problem due to too many signups</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Shrink(System.Double,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32@,System.Int32@,System.Int32,System.Int32)">
+            <summary>
+            This function shrinks the images depending on the screen size
+            </summary>
+            <param name="maxpercent">Percentage to shrink</param>
+            <param name="maxwidth">maximum allowable width. If shrinking results in graeter than 'maxwidth' then
+                                    image width is 'maxwidth' (overrides shrinked size)</param>
+            <param name="maxheight">same as 'maxwidth', only that it specifies image height</param>
+            <param name="picwidth">Original Picture Width</param>
+            <param name="picheight">Original Picture height</param>
+            <param name="dispwidth">Shrinked Picture Width</param>
+            <param name="dispheight">Shrinked Picture height</param>
+            <param name="RHS_Width">Width of the screen - left column width</param>
+            <param name="RHS_height">Height of the screen - banner height</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FindShippingRate(System.String)">
+            <summary>
+            For requested shipping method, get the shipping rate adjusted for free shipping auto-apply if needed.
+            </summary>
+            <param name="shippingMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ClearUserDataForAdmins">
+            <summary>
+            If users if logged in as Admin, Clear all customer data so can take another order
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FindHashCode(System.String)">
+            <summary>
+            find the last hash character in the query string that does not have an ampersand as the preceeding character
+            </summary>
+            <param name="query"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.SleepSQL(System.Int32)">
+            <summary>
+            Sleeps for given number of seconds.
+            </summary>
+            <param name="sleep">number of seconds to sleep </param>
+            <remarks>This code used to call a SQL server as VBScript did not have a thread sleep method.  However, since .NET supports sleeping,
+            this method no longer calls SQL, but still has the name SleepSQL</remarks>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CleanupCouponPercent(System.Double)">
+            <summary>
+            Cleanup Coupon Percentages.  
+            Normally pct should be 0 to 1.  But if a number is entered that is greater
+            than 1, divide by 100 to make 0 to 1.  If coupon percent is negative (e.g. Adding to the value of an order,
+            force it to be positive).  If coupon appears to be really invalid (e.g. > 100), force it to be 0.
+            </summary>
+            <param name="pct">raw coupon value</param>
+            <returns>clean coupon value</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.LookupTwoDigitCountryIdentifier(System.String)">
+            <summary>
+            Converts from Country Name to 2 Character Country Code.
+            </summary>
+            <param name="fieldname"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.IsLower48States(System.String)">
+            <summary>
+            Given a 2 digit State indentifier, returns
+            true if in lower 48 states.
+            false otherwise
+            </summary>
+            <param name="stateTwoDigit">Two digit start</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ShopTemplateArray(System.String,nce.adosql.Recordset,System.String[]@,System.Int32@)">
+            <summary>
+            reads and entire file template into a memory array.
+            creates an array of converted records
+            </summary>
+            <param name="Filename"></param>
+            <param name="RS"></param>
+            <param name="Outarray"></param>
+            <param name="Outcount"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ShopTemplateArray(System.String[],System.Object[],nce.adosql.Recordset,System.String[]@,System.Int32@)">
+            <summary>
+            parses an array of strings, replacing with content from db where possible
+            creates an array of converted records
+            </summary>
+            <param name="Temparray"></param>
+            <param name="RS"></param>
+            <param name="Outarray"></param>
+            <param name="Outcount"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.ShopTemplateLine(System.String,nce.adosql.Recordset)">
+            <summary>
+            applies a template to a single line string
+            </summary>
+            <param name="inData"></param>
+            <param name="RS"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CalcLinkThumbnailSize(System.Int32,System.Int32,System.Int32@,System.Int32@,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="locPicheight">input image height</param>
+            <param name="locPicwidth">input image width</param>
+            <param name="thumbHeight">scaled image height</param>
+            <param name="thumbWidth">scaled image width</param>
+            <param name="maxThumbnailPixels">maximum # of pixels in any dimension</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Decrypt(System.String,System.String)">
+            <summary>
+            Decrypts an encrypted string.  Returns the inputted string if there is an error.
+            </summary>
+            <param name="text">string to decrypt</param>
+            <param name="key">encryption key</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Decrypt(System.String,System.String,System.Boolean)">
+            <summary>
+            Decrypts an encrypted string.  Defaults to return the inputted string if there is an error.
+            </summary>
+            <param name="text">string to decrypt</param>
+            <param name="key">encryption key</param>
+            <param name="returnOriginalIfError">if true, will return original string if decryption was not possible.  If false, will return "" on error</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Encrypt(System.String,System.String)">
+            <summary>
+            Encrypts a string.  Returns the inputted string if there is an error.
+            </summary>
+            <param name="text">string to encrypt</param>
+            <param name="key">encryption key</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Encrypt(System.String,System.String,System.Boolean)">
+            <summary>
+            Encrypts a string.  Defaults to return the inputted string if there is an error.
+            </summary>
+            <param name="text">string to encrypt</param>
+            <param name="key">encryption key</param>
+            <param name="returnOriginalIfError">if true, will return original string if encryption was not possible.  If false, will return "" on error</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FormatOtherMail(System.String,nce.adosql.Recordset,System.String@)">
+             <summary>
+            Use mail on any recordset or table.
+            Returns Result
+             </summary>
+             <param name="Filename"></param>
+             <param name="RS"></param>
+             <param name="Result"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.FormatOtherMail(System.String[],nce.adosql.Recordset,System.String@)">
+             <summary>
+            Use mail on any recordset or table from array of lines
+            Returns Result
+             </summary>
+             <param name="templateArray"></param>
+             <param name="RS"></param>
+             <param name="Result"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.UpdateStockLevelsAbsolute(System.Int64,System.Int32,nce.adosql.Connection,System.Boolean,System.Int32,System.Int64,System.String,System.String,System.String)">
+            <summary>
+            Sets the QtyOnHand or QtyAvailable of a product, 
+            plus adds an audit trail until InventoryTracking
+            </summary>
+            <param name="catalogid">catalogid to change</param>
+            <param name="quantity">amount of Change for the quantity</param>
+            <param name="stockconn">ADODB Connectio that is already open</param>
+            <param name="blnForceUpdateDropShipItem">true means force updates for drop ship items</param>
+            <param name="updateType">corresponds to InventoryAdjustmentTypes in DB</param>
+            <param name="orderid">orderid if known, else 0</param>
+            <param name="comments"></param>
+            <param name="adjustField">either qtyonhand or qtyavailable, else will change both by the quantity amount</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.UpdateStockLevels(System.Int64,System.Int32,nce.adosql.Connection,System.Boolean,System.Int32,System.Int64,System.String,System.String,System.String)">
+            <summary>
+            Adds or Subtracts a Quantity to the QtyOnHand or QtyAvailable (or both) of a product, 
+            plus add an audit trail until InventoryTracking
+            </summary>
+            <param name="catalogid">catalogid to change</param>
+            <param name="quantity">amount of Change for the quantity</param>
+            <param name="stockconn">ADODB Connectio that is already open</param>
+            <param name="blnForceUpdateDropShipItem">true means force updates for drop ship items</param>
+            <param name="updateType">corresponds to InventoryAdjustmentTypes in DB</param>
+            <param name="orderid">orderid if known, else 0</param>
+            <param name="comments"></param>
+            <param name="adjustField">either qtyonhand or qtyavailable, else will change both by the quantity amount</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.Qty9999LimitFix(System.Int32)">
+            <summary>
+            Works around a design flaw in InventoryTracking before 1/16/2009 where table will not 
+            accomodate changes larger than 5 characters.
+            Use of this fix limits numbers to 5 digits (-9999 to 99999).  
+            However, this would mess up the Inventory Adjustments Report, but avoid putting * garbage characters into the DB
+            As of 4/22/2009, the DB is changed so it will not use the affected fields, but this routine remains for backwards
+            compatibility as old fields require non-null values.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CleanupUSPSShippingService(System.String)">
+            <summary>
+            Express Mail&amp;lt;sup&amp;gt;&amp;amp;reg;&amp;lt;/sup&amp;gt; Hold For Pickup
+            convert to 
+            Express Mail Hold For Pickup
+            </summary>
+            <param name="serviceIn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPHelp.CachedProdDataClass.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary> Protected CTor for deserialization</summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.AffiliateLogoClass.FetchMember(System.Int32)">
+            <summary>
+            Returns the JROX Members data for a given MemberId
+            </summary>
+            <param name="memberId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.BuyWidget.AppendAffiliateIdToLinks(System.String,System.Int32)">
+            <summary>
+            Will make sure any href include the affiliate id
+            </summary>
+            <param name="s">input string</param>
+            <param name="affid">affiliate id</param>
+            <returns>modified string with affiliate ids added</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.EncryptAppSettingsClass.EncryptAppSettings(System.String)">
+            <summary>
+            Encrypt web.config appSettings using a custom RsaProtectedConfiguration
+            </summary>
+            <param name="appPath">relative path to web.config file, e.g. Request.ApplicationPath</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.EncryptAppSettingsClass.DecryptAppSettings(System.String)">
+            <summary>
+            Decrypt web.config appSettings using a custom RsaProtectedConfiguration
+            </summary>
+            <param name="appPath">relative path to web.config file</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.EncryptAppSettingsClass.IsProtected(System.String)">
+            <summary>
+            return state of where a web.config appSettings is Protected
+            </summary>
+            <param name="appPath">relative path to web.config file</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.iHelpMyCalculations.ComputeDiscountII(System.Decimal)">
+            <summary>
+            Computes discounted value that is to be posted to Jrox(Jrox Computes the commission on its interface-side)
+            </summary>
+            <param name="prodTot">Total Product Amount</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.iHelpMyCalculations.FormatCountToFBCount(System.Int32)">
+            <summary>
+            Formats Integer count to facebook Count (2000 to 2K, 2112 to 2.112K , 25694 to 2.57(rounded off)) upto a max of int 32 bit
+            </summary>
+            <param name="count">integer count</param>
+            <returns>FB formatted Count (2000 is 2K)</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.iHelpMyCalculations.AddUserToFacebookTable(System.String,System.String,System.String,System.String,System.String,System.String@)">
+            <summary>
+            Add a facebook UserId to database
+            </summary>
+            <param name="userId">String userId of the User</param>
+            <param name="permsLevel">Perms level of 1,2,3 (1-local, 2-national, 3-both)</param>
+            <param name="statusMsg">error/log message</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPSearchData.Sign(System.Int32,System.Int32)">
+             <summary>
+            Transfer of Sign.  Results is |a1|  if a2 greater or equal to  0 and 
+             -|a1| if a2 less than 0 
+             </summary>
+             <param name="arg1"></param>
+             <param name="arg2"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPSearchData.ListOfProductsInSearchResults(System.Int32[],System.Object[0:,0:],System.Int32)">
+            <summary>
+            Returns a list of products, up to maxToReturn number of items, 
+            that are in the cachedSearchArray results, in the sort order specified by sortPointers
+            </summary>
+            <param name="sortPointers">array of sort indices</param>
+            <param name="cachedSearchArray">object containing all search results</param>
+            <param name="maxToReturn">maximum number of results to return</param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.SHPSearchData.GenerateRelevanceScoreString(System.String,System.String,System.Boolean)">
+            <summary>
+            GenerateRelevanceScoreString which is used for the order by and where clauses.
+            positive only allows where clause to not include elements that are always less than 0
+            </summary>
+            <param name="currentSql"></param>
+            <param name="searchValue"></param>
+            <param name="positiveOnly"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.ImageResizeToArray(System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Resizes an image to a Jpeg byte array
+            </summary>
+            <param name="oImage"></param>
+            <param name="newWidth"></param>
+            <param name="newHeight"></param>
+            <param name="quality"></param>
+            <param name="format"></param>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.ImageResizeToBitmap(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>
+            Resizes an image to a bitmap output
+            </summary>
+            <param name="oImage"></param>
+            <param name="newWidth"></param>
+            <param name="newHeight"></param>
+            <param name="quality"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.CalcuateResizeDimensions(System.Drawing.Image,System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Given a maximum imput dimension, calculate max output
+            </summary>
+            <param name="oImage"></param>
+            <param name="nMaxDisplayWidth"></param>
+            <param name="nMaxDisplayHeight"></param>
+            <param name="newWidth"></param>
+            <param name="newHeight"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.ImageResize(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Resize Image but limit dimensions to max dimension size (either height or width)
+            </summary>
+            <param name="inFile"></param>
+            <param name="outFile"></param>
+            <param name="nMaxDisplaySize"></param>
+            <param name="quality"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.ImageResize(System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Resize Image but limit dimensions to max width and height
+            </summary>
+            <param name="inFile"></param>
+            <param name="outFile"></param>
+            <param name="nMaxDisplayWidth"></param>
+            <param name="nMaxDisplayHeight"></param>
+            <param name="quality"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageResizeClass.ImageResizeForce(System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Resize Imaging, forcing resulting size to be a specific size
+            </summary>
+            <param name="inFile"></param>
+            <param name="outFile"></param>
+            <param name="newWidth"></param>
+            <param name="newHeight"></param>
+            <param name="quality"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetTopImageColors(System.String)">
+            <summary>
+            Returns a list of colors used in an image sorted by most common
+            </summary>
+            <param name="inFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetTopImageColors(System.String,System.Int32,System.Double)">
+            <summary>
+            Returns a list of colors used in an image sorted by most common
+            </summary>
+            <param name="inFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetTopImageColors(System.Drawing.Image,System.Double)">
+            <summary>
+            Returns a list of colors used in an image sorted by most common
+            </summary>
+            <param name="oImage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetTopImageColors(System.Drawing.Image,System.Int32,System.Double,System.Double)">
+            <summary>
+            Returns a list of colors used in an image sorted by most common
+            </summary>
+            <param name="oImage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.CombineSimilarColors(Verq.SHPWebSiteHelper.ImageColorClass.ImageColor[])">
+            <summary>
+            Combine similar colors when they are similar and until the 
+            number of colors remaining is less or equal to maxNum
+            </summary>
+            <param name="inColors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.CombineSimilarColors(Verq.SHPWebSiteHelper.ImageColorClass.ImageColor[],System.Int32,System.Double)">
+            <summary>
+            Combine similar colors when they are similar and until the 
+            number of colors remaining is less or equal to maxNum
+            </summary>
+            <param name="inColors"></param>
+            <param name="maxNum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetBestTwoColors(System.Drawing.Image)">
+            <summary>
+            Given an image file, find the best two colors that are primary in the
+            image and are complementary (would look good in text)
+            </summary>
+            <param name="oImage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetBestTwoColors(Verq.SHPWebSiteHelper.ImageColorClass.ImageColor[])">
+            <summary>
+            Given an image file, find the best two colors that are primary in the
+            image and are complementary (would look good in text)
+            </summary>
+            <param name="oImage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetBestTwoColors(System.String)">
+            <summary>
+            Given an image file, find the best two colors that are primary in the
+            image and are complementary (would look good in text)
+            </summary>
+            <param name="inFile"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetContrastingColor(Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor)">
+            <summary>
+            http://blog.tatham.oddie.com.au/2006/04/01/
+            From a given colour it works out a suitable colour that will sit on top of
+            it so that the contrast is suitable for readability.
+            </summary>
+            <param name="baseColor">Color to get the contrasting complement of</param>
+            <returns>Contrasting color</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetDarkerColor(Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor,System.Double)">
+            <summary>
+            From a given colour, find a darker version of it that has approximately the desiredDifferenceFromWhite
+            </summary>
+            <param name="baseColor">Color to get the darker color of</param>
+            <returns>Darker color</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.GetLighterColor(Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor,System.Double)">
+            <summary>
+            From a given colour, find a lighter version of it that has approximately the desiredDifferenceFromBlack
+            </summary>
+            <param name="baseColor">Color to get the lighter color of</param>
+            <returns>lighter color</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.ColorCompare.Compare(Verq.SHPWebSiteHelper.ImageColorClass.ImageColor,Verq.SHPWebSiteHelper.ImageColorClass.ImageColor)">
+            <summary>
+            Sort colors from highest count to lowest
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor.#ctor(System.String)">
+            <summary>
+            Convert from string to R,G,B in color
+            </summary>
+            <param name="col"></param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor.Distance(Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor)">
+            <summary>
+            Calculate distance between two colors
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor.DistanceFromGray">
+            <summary>
+            Calculate distance from nearest gray color
+            This is useful to make sure we are not combining 'real' colors
+            and leaving only gray ones
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.ImageColorClass.DoubleColor.ToString">
+            <summary>
+            Return a string in RGB for this color
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.#ctor">
+            <summary>
+            Creates a new instance of the <see cref="T:GCheckout.Util.BasicAuthenticationModule"/> 
+            class. This is done by IIS.
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.Dispose">
+            <summary>
+            Disposes of the resources (other than memory) used by the
+            module that implements <see langword="IHttpModule."/>
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.Init(System.Web.HttpApplication)">
+            <summary>
+            Inits the specified application. This will be called by the system.
+            </summary>
+            <param name="application">The HTTP application.</param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.OnAuthenticateRequest(System.Object,System.EventArgs)">
+            <summary>
+            Called when IIS asks to authenticate an HTTP request.
+            </summary>
+            <param name="source">The calling HttpApplication.</param>
+            <param name="eventArgs">
+            The <see cref="T:System.EventArgs"/> instance 
+            containing the event data.
+            </param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.OnEndRequest(System.Object,System.EventArgs)">
+            <summary>
+            Called by the system when the HTTP request ends.
+            </summary>
+            <param name="source">The calling HttpApplication.</param>
+            <param name="eventArgs">
+            The <see cref="T:System.EventArgs"/> instance 
+            containing the event data.
+            </param>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.GetUserName(System.String)">
+            <summary>
+            Gets the name of the user from the "Authorization" HTTP header. That header has
+            user name and password (as typed by the user) in a Base64-encoded form.
+            </summary>
+            <param name="authHeader">
+            The value of the "Authorization" HTTP header.
+            </param>
+            <returns>The name of the user as typed by the user in the browser.</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.GetPassword(System.String)">
+            <summary>
+            Gets the password from the "Authorization" HTTP header. That header has
+            user name and password (as typed by the user) in a Base64-encoded form.
+            </summary>
+            <param name="authHeader">
+            The value of the "Authorization" HTTP header.
+            </param>
+            <returns>The password as typed by the user in the browser.</returns>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.UserHasAccess(System.String,System.String)">
+            <summary>
+            Verify if the user has access to perform the callback
+            </summary>
+            <param name="userName">The userName making the call.</param>
+            <param name="password">The password of the user.</param>
+            <returns>True or false if the user is able to perform the callback.</returns>
+        </member>
+        <member name="P:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.UserName">
+            <summary>
+            The userName performing the request
+            </summary>
+        </member>
+        <member name="P:Verq.SHPWebSiteHelper.MyGoogleBasicAuthenticationModule.Password">
+            <summary>
+            The password of the User performing the call.
+            </summary>
+        </member>
+        <member name="M:Verq.SHPWebSiteHelper.VendorOrdersIncludeClass.ExtractDateFromPONUmber(System.String)">
+            <summary>
+            Convert from an SHP PO number to a date.  E.g. 20081029-8  -> 2008-10-29,
+            but PO 123456 -> DateTime.MinValue
+            </summary>
+            <param name="poNum">Purchase Order Number</param>
+            <returns>Date of PO</returns>
+        </member>
+    </members>
+</doc>
